@@ -20,17 +20,18 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1"
-  metadata-complete="true">
+  metadata-complete="false">
 
   <!-- <servlet>
-    <servlet-name>ControllerServlet</servlet-name>
-    <servlet-class>pack.ControllerServlet</servlet-class>  
+    <servlet-name>LoginController</servlet-name>
+    <servlet-class>controllers.LoginController</servlet-class>  
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>ControllerServlet</servlet-name>
-    <url-pattern>/ControllerServlet</url-pattern>
+    <servlet-name>LoginController</servlet-name>
+    <url-pattern>/LoginController</url-pattern>
   </servlet-mapping> -->
+
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>

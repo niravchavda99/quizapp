@@ -9,6 +9,7 @@
     }
   }
 </style>
+<title>Quiz App</title>
 </head>
 
 <body>
@@ -21,7 +22,7 @@
               alt="Sample image">
           </div>
           <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-            <form>
+            <form method="POST" action="LoginController">
 
               <div class="align-items-center my-4">
                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
@@ -30,14 +31,14 @@
               <!-- Email input -->
               <div class="form-floating mb-4">
                 <input type="email" id="email" class="form-control form-control-lg"
-                  placeholder="Enter a valid email address" />
+                  placeholder="Enter a valid email address" name="email" />
                 <label class="form-label" for="email">Email address</label>
               </div>
 
               <!-- Password input -->
               <div class="form-floating mb-3">
                 <input type="password" id="password" class="form-control form-control-lg"
-                  placeholder="Enter password" />
+                  placeholder="Enter password" name="password" />
                 <label class="form-label" for="password">Password</label>
               </div>
 
@@ -53,7 +54,7 @@
               </div>
 
               <div class="text-center text-lg-start mt-4 pt-2">
-                <button type="button" class="btn btn-primary btn-lg"
+                <button type="submit" class="btn btn-primary btn-lg"
                   style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
                 <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="register.jsp"
                     class="link-danger">Register</a></p>
