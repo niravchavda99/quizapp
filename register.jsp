@@ -1,38 +1,14 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="ISO-8859-1">
-    <title>Insert title here</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <style>
-        .h-custom {
-            height: calc(100% - 73px);
-        }
-
-        @media (max-width: 450px) {
-            .h-custom {
-                height: 100%;
-            }
-        }
-    </style>
-=======
 <jsp:include page="header.jsp" />
 <style>
     .h-custom {
         height: calc(100% - 73px);
     }
-
     @media (max-width: 450px) {
         .h-custom {
             height: 100%;
         }
     }
 </style>
->>>>>>> 62ca8c8 (Seperating Header & Footer.)
 </head>
 
 <body>
@@ -74,11 +50,7 @@
                             <div class="text-center text-lg-start mt-4 pt-2">
                                 <button type="button" class="btn btn-primary btn-lg"
                                     style="padding-left: 2.5rem; padding-right: 2.5rem;">Register</button>
-<<<<<<< HEAD
-                                <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="login.html"
-=======
                                 <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="login.jsp"
->>>>>>> 62ca8c8 (Seperating Header & Footer.)
                                         class="link-danger">Login</a></p>
                             </div>
 
@@ -88,13 +60,4 @@
             </div>
         </section>
     </div>
-<<<<<<< HEAD
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-</body>
-
-</html>
-=======
     <jsp:include page="footer.jsp" />
->>>>>>> 62ca8c8 (Seperating Header & Footer.)
