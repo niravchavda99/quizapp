@@ -13,7 +13,7 @@ public class Database {
         try (Connection connection = DriverManager.getConnection(DB_URL + "quizapp", DB_USERNAME, DB_PASSWORD);
                 Statement statement = connection.createStatement()) {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String sql = "SELECT * FROM users WHERE email='" + email + "' AND password='" + password + "'";
+            String sql = "SELECT * FROM users WHERE email='" + email + "' AND BINARY password='" + password + "'";
             ResultSet resultSet = statement.executeQuery(sql);
 
             User user = null;
@@ -32,27 +32,23 @@ public class Database {
         }
     }
 
-    public static User registerUser(String name, String email, String password) {
-        try (Connection connection = DriverManager.getConnection(DB_URL + "quizapp", DB_USERNAME, DB_PASSWORD);
-                Statement statement = connection.createStatement()) {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String sql = String.format("INSERT INTO users (name, email, password) VALUES('%s', '%s', '%s')", name,
-                    email, password);
-            int count = statement.executeUpdate(sql);
+    public static User registerUser(String name, String email, String password) throws Exception {
+        Connection connection = DriverManager.getConnection(DB_URL + "quizapp", DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        String sql = String.format("INSERT INTO users (name, email, password) VALUES('%s', '%s', '%s')", name, email,
+                password);
+        int count = statement.executeUpdate(sql);
 
-            User user = null;
+        User user = null;
 
-            if (count > 0) {
-                user = new User();
-                user.setEmail(email);
-                user.setName(name);
-                user.setPassword(password);
-            }
-
-            return user;
-        } catch (Exception e) {
-            System.out.println("Error in database: " + e.getMessage());
-            return null;
+        if (count > 0) {
+            user = new User();
+            user.setEmail(email);
+            user.setName(name);
+            user.setPassword(password);
         }
+
+        return user;
     }
 }
