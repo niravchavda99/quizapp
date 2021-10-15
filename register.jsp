@@ -30,7 +30,6 @@
                     </div>
                     <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                         <form method="POST" action="RegistrationController">
-
                             <div class="align-items-center my-4">
                                 <h2 class="fw-bold mb-2 text-uppercase">Register</h2>
                             </div>
@@ -68,6 +67,13 @@
                                 <label class="form-label" for="email">Email address</label>
                             </div>
 
+                            <!-- Phone number input -->
+                            <div class="form-floating mb-4">
+                                <input type="text" id="phone" class="form-control form-control-lg"
+                                    placeholder="Enter a valid phone number" required name="phone" />
+                                <label class="form-label" for="phone">Phone Number</label>
+                            </div>
+
                             <!-- Password input -->
                             <div class="form-floating mb-3">
                                 <input type="password" id="password" class="form-control form-control-lg"
@@ -83,12 +89,10 @@
 
                             <div class="text-center text-lg-start mt-4 pt-2">
                                 <button type="submit" class="btn btn-primary btn-lg"
-                                    style="padding-left: 2.5rem; padding-right: 2.5rem;" id="submitBtn" disabled>Register</button>
+                                    style="padding-left: 2.5rem; padding-right: 2.5rem; display: none;" id="submitBtn">Register</button>
                                 <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="login.jsp"
                                         class="link-danger">Login</a></p>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
@@ -99,15 +103,25 @@
     <script>
         const pass = document.getElementById("password");
         const repass = document.getElementById("repassword");
+        // const phone = document.getElementById("phone");
+        // const name = document.getElementById("name");
+        // const email = document.getElementById("email");
+        const submitButton = document.getElementById("submitBtn");
+        const errorMessage = document.getElementById("errorMessage");
+
+        const toggleSubmitButton = value => submitBtn.style.display = (value ? "block" : "none");
+        const toggleErrorMessage = value => errorMessage.style.display = (value ? "block" : "none");
+
         function checkPassword() {
-            if(pass.value === repass.value) {
-                document.getElementById("submitBtn").disabled = "";
-                document.getElementById("errorMessage").style.display = "none";
-                return;
+            if(pass.value != "" && repass.value != null && pass.value === repass.value) {
+                toggleSubmitButton(true);
+                toggleErrorMessage(false);
+                return true;
             }
 
-            document.getElementById("submitBtn").disabled = "disabled";
-            document.getElementById("errorMessage").style.display = "block";
+            toggleSubmitButton(false);
+            toggleErrorMessage(true);
+            return false;
         }
     </script>
     <jsp:include page="authfooter.jsp" />

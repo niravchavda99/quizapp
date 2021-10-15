@@ -9,6 +9,8 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.WebServlet;
 
 import utils.Database;
+import utils.OtpUtils;
+import models.OTP;
 import models.User;
 
 @WebServlet("/RegistrationController")
@@ -33,6 +35,7 @@ public class RegistrationController extends HttpServlet {
 
         String name = request.getParameter("name");
         String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String repassword = request.getParameter("repassword");
         String errorMessage = "Some error occured. Please Try Again!";
@@ -40,11 +43,14 @@ public class RegistrationController extends HttpServlet {
         // Database connection Logic
         try {
             if (password.equals(repassword)) {
-                User user = Database.registerUser(name, email, password);
+                User user = Database.registerUser(name, email, password, phone);
                 if (user != null) {
                     HttpSession session = request.getSession(true);
+                    OTP otp = OtpUtils.generate();
+                    user.setOtp(otp);
                     session.setAttribute("user", user);
-                    response.sendRedirect("dashboard.jsp");
+                    // response.sendRedirect("dashboard.jsp");
+                    response.sendRedirect("verifyAccount.jsp");
                 } else {
                     returnErrorRequest("Password dont match!", request, response);
                 }
@@ -54,9 +60,11 @@ public class RegistrationController extends HttpServlet {
         } catch (SQLException e) {
             if (e.getMessage().startsWith("Duplicate entry"))
                 errorMessage = "Email already registered!";
+            System.out.println(e.getMessage());
             returnErrorRequest(errorMessage, request, response);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+            System.out.println(e.getMessage());
             returnErrorRequest(errorMessage, request, response);
         }
     }

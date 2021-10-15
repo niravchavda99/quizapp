@@ -7,8 +7,10 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.WebServlet;
 
+import models.OTP;
 import models.User;
 import utils.Database;
+import utils.OtpUtils;
 
 @WebServlet("/LoginController")
 public class LoginController extends HttpServlet {
@@ -31,8 +33,17 @@ public class LoginController extends HttpServlet {
 
         if (user != null) {
             HttpSession session = request.getSession(true);
-
             session.setAttribute("user", user);
+            
+            if(!user.getIsVerified()) {
+                OTP otp = OtpUtils.generate();
+                user.setOtp(otp);
+                session.setAttribute("user", user);
+
+                // Send OTP from here...
+                response.sendRedirect("verifyAccount.jsp");
+                return;
+            }
 
             response.sendRedirect("dashboard.jsp");
         } else {

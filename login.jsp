@@ -17,6 +17,10 @@
     <%
         User user = (User) session.getAttribute("user");
         if(user != null) {
+          if(!user.getIsVerified()) {
+            response.sendRedirect("verifyAccount.jsp");
+            return;
+          }
             response.sendRedirect("dashboard.jsp");
             return;
         }

@@ -23,6 +23,8 @@ public class Database {
                 user.setEmail(resultSet.getString("email"));
                 user.setName(resultSet.getString("name"));
                 user.setPassword(resultSet.getString("password"));
+                user.setPhone(resultSet.getString("phone"));
+                user.setIsVerified(resultSet.getBoolean("isVerified"));
             }
 
             return user;
@@ -32,12 +34,23 @@ public class Database {
         }
     }
 
-    public static User registerUser(String name, String email, String password) throws Exception {
+    public static boolean verifyUser(User user) throws Exception {
         Connection connection = DriverManager.getConnection(DB_URL + "quizapp", DB_USERNAME, DB_PASSWORD);
         Statement statement = connection.createStatement();
         Class.forName("com.mysql.cj.jdbc.Driver");
-        String sql = String.format("INSERT INTO users (name, email, password) VALUES('%s', '%s', '%s')", name, email,
-                password);
+        String sql = String.format("UPDATE users SET isVerified=1 WHERE email='%s'", user.getEmail());
+
+        int count = statement.executeUpdate(sql);
+
+        return count > 0;
+    }
+
+    public static User registerUser(String name, String email, String password, String phone) throws Exception {
+        Connection connection = DriverManager.getConnection(DB_URL + "quizapp", DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        String sql = String.format("INSERT INTO users (name, email, password, phone, isVerified) VALUES('%s', '%s', '%s', '%s', 0)", name, email,
+                password, phone);
         int count = statement.executeUpdate(sql);
 
         User user = null;
@@ -47,6 +60,7 @@ public class Database {
             user.setEmail(email);
             user.setName(name);
             user.setPassword(password);
+            user.setPhone(phone);
         }
 
         return user;
