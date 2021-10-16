@@ -99,12 +99,51 @@
         </div>
     </div>
 
+    <%@page import="models.Quiz"%>
+    <%@page import="utils.Database"%>
+    <%@page import="java.util.List"%>
+    <%@page import="java.sql.Timestamp"%>
+
     <%
-        Database.fetchQuizes();
+        List<Quiz> quizes = Database.fetchQuizes(user.getEmail());
     %>
 
     <div class="container">
-        
+    <h1 style="text-align: center; color: white;">Your Quizes</h1>
+    <%
+        if(quizes.isEmpty()) {
+    %>
+        <div class="alert alert-info">You haven't created any quiz yet!</div>
+    <%
+            return;
+        }
+    %>
+    <table class="table table-success table-striped">
+        <tr>
+            <th>Sr. No</th>
+            <th>Topic</th>
+            <th>Created At</th>
+            <th></th>
+            <th></th>
+        </tr>
+    <%
+        for(int i = 0; i < quizes.size(); i++) {
+            Quiz quiz = quizes.get(i);
+            Timestamp timestamp = quiz.getTimestamp();
+            String date = String.format("%d-%d-%d", timestamp.getDate(), timestamp.getMonth() + 1, timestamp.getYear() + 1900);
+            String time = String.format("%d:%d:%d", timestamp.getHours(), timestamp.getMinutes(), timestamp.getSeconds());
+    %>
+        <tr>
+            <td><%=(i+1)%></td>
+            <td><%=quiz.getTopic()%></td>
+            <td><%=date + "  " + time%></td>
+            <td><a class="btn btn-primary" href="quiz.jsp?id=<%=quiz.getId()%>">View</a></td>
+            <td><a class="btn btn-danger">Delete</a></td>
+        </tr>
+    <%
+        }
+    %>
+    </table>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

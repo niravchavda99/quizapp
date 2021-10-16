@@ -75,7 +75,7 @@ public class Database {
         Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
         Statement statement = connection.createStatement();
         Class.forName("com.mysql.cj.jdbc.Driver");
-        String sql = String.format("SELECT * FROM quizes WHERE email='%s'", email);
+        String sql = String.format("SELECT * FROM quizes WHERE email='%s' ORDER BY timestamp DESC", email);
 
         List<Quiz> quizes = new ArrayList<>();
 
@@ -85,6 +85,7 @@ public class Database {
             Quiz quiz = new Quiz();
             quiz.setId(resultSet.getString("quizid"));
             quiz.setTopic(resultSet.getString("topic"));
+            quiz.setTimestamp(resultSet.getTimestamp("timestamp"));
 
             quizes.add(quiz);
         }

@@ -1,8 +1,19 @@
 package models;
 
+import java.sql.Timestamp;
+
 public class Quiz {
     private String id;
     private String topic;
+    private Timestamp timestamp;
+
+    public Timestamp getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public String getId() {
         return this.id;

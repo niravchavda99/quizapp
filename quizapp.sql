@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 16, 2021 at 02:16 PM
+-- Generation Time: Oct 16, 2021 at 06:51 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -30,16 +30,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `quizes` (
   `quizid` varchar(6) NOT NULL,
   `topic` varchar(100) NOT NULL,
-  `email` varchar(50) NOT NULL
+  `email` varchar(50) NOT NULL,
+  `timestamp` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `quizes`
 --
 
-INSERT INTO `quizes` (`quizid`, `topic`, `email`) VALUES
-('ABCDEF', 'Quiz 1', 'nmchavda99@gmail.com'),
-('PQRXYZ', 'Quiz 2', 'nmchavda99@gmail.com');
+INSERT INTO `quizes` (`quizid`, `topic`, `email`, `timestamp`) VALUES
+('ABCDEF', 'Quiz 1', 'nmchavda99@gmail.com', '2021-10-16 21:32:38'),
+('PQRXYZ', 'Quiz 2', 'nmchavda99@gmail.com', '2021-10-16 21:34:35');
 
 -- --------------------------------------------------------
 
