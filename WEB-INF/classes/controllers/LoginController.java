@@ -36,9 +36,9 @@ public class LoginController extends HttpServlet {
             session.setAttribute("user", user);
             
             if(!user.getIsVerified()) {
-                OTP otp = OtpUtils.generate();
-                user.setOtp(otp);
-                session.setAttribute("user", user);
+                // OTP otp = OtpUtils.generate();
+                // user.setOtp(otp);
+                // session.setAttribute("user", user);
 
                 // Send OTP from here...
                 response.sendRedirect("verifyAccount.jsp");

@@ -2,6 +2,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <%@page import="models.User"%>
 <%@page import="models.OTP"%>
+<%@page import="utils.OtpUtils"%>
 <%
     User user = (User) session.getAttribute("user");
     if(user == null) {
@@ -14,7 +15,11 @@
         return;
     }
 
-    out.println(user.getOtp().getValue());
+    OTP otp = OtpUtils.generate();
+    user.setOtp(otp);
+    session.setAttribute("user", user);
+    OtpUtils.send(user.getEmail(), otp);
+
     String otpErrorMessage = (String) session.getAttribute("otpErrorMessage");
     String numberEnding = user.getPhone().substring(user.getPhone().length() - 3);
 %>
@@ -36,5 +41,28 @@
         <input type="text" class="form-control" name="verifyOtp" id="verifyOtp" style="font-size: 30px; width: 200px; margin: 0 auto; border: 1px solid black;" placeholder="OTP">
         <br />
         <input type="submit" value="Verify" id="verifyBtn" class="btn btn-primary btn-lg">
+        <br />
+        <br />
+        <div class="alert alert-dark" id="timerInfo">Your OTP is valid for another 120 seconds.</div>
     </form>
+
+    <a class="btn btn-danger" href="/quizapp/Logout">Logout</a>
 </div>
+
+<script>
+    const timerInfo = document.getElementById("timerInfo");
+    const submitButton = document.getElementById("verifyBtn");
+    let timer = 120;
+
+    const timerObj = setInterval(() => {
+        timer--;
+        timerInfo.innerHTML = "Your OTP is valid for another "+ timer + " seconds.";
+
+        if(timer == 0) {
+            submitButton.style.display = "none";
+            timerInfo.innerHTML = "<a href=''>Resend</a> OTP";
+            clearInterval(timerObj);
+        }
+    }, 1000);
+    
+</script>

@@ -46,9 +46,9 @@ public class RegistrationController extends HttpServlet {
                 User user = Database.registerUser(name, email, password, phone);
                 if (user != null) {
                     HttpSession session = request.getSession(true);
-                    OTP otp = OtpUtils.generate();
-                    user.setOtp(otp);
-                    session.setAttribute("user", user);
+                    // OTP otp = OtpUtils.generate();
+                    // user.setOtp(otp);
+                    // session.setAttribute("user", user);
                     // response.sendRedirect("dashboard.jsp");
                     response.sendRedirect("verifyAccount.jsp");
                 } else {
