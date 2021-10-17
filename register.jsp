@@ -38,7 +38,7 @@
                             String errorMessage = (String) request.getAttribute("errorMessage");
                             if(errorMessage != null) {
                                 out.println("<div class='text-center text-lg-start mt-4 pt-2' id='errorMessage'>");
-                                out.println("<div class='alert alert-danger' role'alert'>");
+                                out.println("<div class='alert alert-danger' role='alert'>");
                                 
                                 out.println(errorMessage);
                                 

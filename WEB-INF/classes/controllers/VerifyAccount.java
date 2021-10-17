@@ -25,7 +25,7 @@ public class VerifyAccount extends HttpServlet {
             return;
         }
         
-        String enteredOtp = request.getParameter("verifyOtp");
+        String enteredOtp = request.getParameter("field1") + request.getParameter("field2") + request.getParameter("field3") + request.getParameter("field4") + request.getParameter("field5") + request.getParameter("field6");
         System.out.println("Entered: "+enteredOtp);
         System.out.println("Original: "+user.getOtp().getValue());
         System.out.println(enteredOtp.equals(user.getOtp().getValue()));
