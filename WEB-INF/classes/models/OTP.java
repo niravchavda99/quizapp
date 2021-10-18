@@ -2,7 +2,7 @@ package models;
 
 import java.time.LocalDateTime;
 
-public class OTP {
+public class OTP implements java.io.Serializable {
     private String value;
     private LocalDateTime generatedAt;
 
@@ -13,6 +13,7 @@ public class OTP {
     public void setGeneratedAt(LocalDateTime generatedAt) {
         this.generatedAt = generatedAt;
     }
+
     private LocalDateTime expiry;
 
     public String getValue() {

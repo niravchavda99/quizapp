@@ -1,11 +1,22 @@
 package models;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.List;
 
-public class Quiz {
+public class Quiz implements java.io.Serializable {
     private String id;
     private String topic;
     private Timestamp timestamp;
+    private List<Question> questions;
+
+    public List<Question> getQuestions() {
+        return Collections.unmodifiableList(this.questions);
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 
     public Timestamp getTimestamp() {
         return this.timestamp;
