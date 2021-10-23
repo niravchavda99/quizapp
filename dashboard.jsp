@@ -44,6 +44,10 @@
     .card-body {
         background-color: #CFD8DC;
     }
+
+    .modal-header {
+        background-color: rgba(255, 193, 7, 1);
+    }
     </style>
 </head>
 <body style="background-color: #455A64;">

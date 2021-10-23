@@ -9,6 +9,15 @@ public class Question implements java.io.Serializable {
     private String answer;
     private Timestamp timestamp;
     private String quizId;
+    private int qno;
+
+    public int getQno() {
+        return this.qno;
+    }
+
+    public void setQno(int qno) {
+        this.qno = qno;
+    }
 
     public String getQuizId() {
         return this.quizId;

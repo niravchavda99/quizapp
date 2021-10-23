@@ -46,6 +46,14 @@
     .row-body:hover {
         background-color: #00BCD4;
     }
+
+    .modal-textbox {
+        margin: 10px 0px;
+    }
+
+    .modal-header {
+        background-color: #00BCD4;
+    }
     </style>
 </head>
 <body style="background-color: #455A64;">
@@ -59,27 +67,6 @@
             return;
         }
     %>
-
-    <!-- Add Question Modal -->
-    <div class="modal fade" id="createQuizModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form action="CreateQuizController" method="POST">
-            <div class="modal-body">
-                <input type="text" class="form-control" placeholder="Quiz Topic" name="topic" id="topic" required />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-warning">Create</button>
-            </div>
-        </form>
-        </div>
-    </div>
-    </div>
     
 <%@include file="navTemplate.html"%>
 <%@page import="utils.Database"%>
@@ -103,6 +90,45 @@
     List<Question> questions = Database.fetchQuestions(quiz.getId());
     quiz.setQuestions(questions);
 %>
+
+<%-- M O D A L S    S T A R T    H E R E --%>
+
+    <!-- Add Question Modal -->
+    <div class="modal fade" id="addQuestionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Add Question</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="AddQuestionController" method="POST">
+            <div class="modal-body">
+                <input type="text" class="form-control modal-textbox" placeholder="Question" name="question" id="question" required />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 1" name="option1" id="option1" required />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 2" name="option2" id="option2" required />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 3" name="option3" id="option3" required />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 4" name="option4" id="option4" required />
+
+                <select class="form-control modal-textbox" name="answer" required>
+                    <option selected disabled>Answer</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                </select>
+                <input type="hidden" name="quizid" id="quizid" value="<%=quizid%>">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-info">Create</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
+<%-- M O D A L S    E N D    H E R E --%>
+
     <div class="container">
         <h1 class="display-5 text-center" style="color: white; padding: 20px;"><%=quiz.getTopic()%></h1>
         <%-- <table class="table table-hover table-striped table-dark">
@@ -114,7 +140,7 @@
         </tr> --%>
 
         <div>
-            <div class="btn btn-primary"><i class="fas fa-plus"></i> Add Question</div>
+            <div class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addQuestionModal"><i class="fas fa-plus"></i> Add Question</div>
         <div>
 
         <br>
@@ -158,7 +184,7 @@
             </div>
             
             <div class="col-2 text-center">
-                <span class="view-quiz">
+                <span class="view-quiz" data-bs-toggle="modal" data-bs-target="#editQuestionModal<%=i%>">
                     <i class="fas fa-pencil-alt"></i>
                 </span>
             </div>
@@ -169,6 +195,39 @@
                 </a>
             </div>
         </div>
+
+        <!-- Edit Question Modal -->
+    <div class="modal fade" id="editQuestionModal<%=i%>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Edit Question</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="AddQuestionController" method="POST">
+            <div class="modal-body">
+                <input type="text" class="form-control modal-textbox" placeholder="Question" name="question" id="question" required value="<%=question.getQuestion()%>" />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 1" name="option1" id="option1" required value="<%=question.getOption1()%>" />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 2" name="option2" id="option2" required value="<%=question.getOption2()%>" />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 3" name="option3" id="option3" required value="<%=question.getOption3()%>" />
+                <input type="text" class="form-control modal-textbox" placeholder="Option 4" name="option4" id="option4" required value="<%=question.getOption4()%>" />
+
+                <select class="form-control modal-textbox" name="answer" required>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                </select>
+                <input type="hidden" name="quizid" id="quizid" value="<%=quizid%>">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-info">Create</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
 <%
     }
 %>

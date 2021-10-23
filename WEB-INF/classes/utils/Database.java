@@ -165,4 +165,20 @@ public class Database {
 
         return questions;
     }
+
+    public static boolean addQuestion(Question question) throws SQLException, ClassNotFoundException {
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String sql = String.format(
+                "INSERT INTO questions VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                question.getId(), question.getQuestion(), question.getOption1(), question.getOption2(),
+                question.getOption3(), question.getOption4(), question.getAnswer(), question.getQuizId(),
+                question.getTimestamp().toString(), question.getQno());
+
+        int count = statement.executeUpdate(sql);
+
+        return count > 0;
+    }
 }
