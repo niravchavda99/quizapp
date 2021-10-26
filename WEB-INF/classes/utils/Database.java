@@ -141,7 +141,7 @@ public class Database {
         Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
         Statement statement = connection.createStatement();
         Class.forName("com.mysql.cj.jdbc.Driver");
-        String sql = String.format("SELECT * FROM questions WHERE BINARY quizid='%s'", quizid);
+        String sql = String.format("SELECT * FROM questions WHERE BINARY quizid='%s' ORDER BY timestamp", quizid);
 
         List<Question> questions = new ArrayList<>();
 
@@ -176,6 +176,34 @@ public class Database {
                 question.getId(), question.getQuestion(), question.getOption1(), question.getOption2(),
                 question.getOption3(), question.getOption4(), question.getAnswer(), question.getQuizId(),
                 question.getTimestamp().toString(), question.getQno());
+
+        int count = statement.executeUpdate(sql);
+
+        return count > 0;
+    }
+
+    public static boolean updateQuestion(String questionid, String question, String option1, String option2,
+            String option3, String option4, String answer, String quizid) throws SQLException, ClassNotFoundException {
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String sql = String.format(
+                "UPDATE questions SET question='%s', option1='%s', option2='%s', option3='%s', option4='%s', answer='%s' WHERE questionid='%s' AND quizid='%s'",
+                question, option1, option2, option3, option4, answer, questionid, quizid);
+
+        int count = statement.executeUpdate(sql);
+
+        return count > 0;
+    }
+
+    public static boolean deleteRecord(String table, String type, String id)
+            throws SQLException, ClassNotFoundException {
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String sql = String.format("DELETE FROM '%s' WHERE '%s'id='%s'", table, type, id);
 
         int count = statement.executeUpdate(sql);
 

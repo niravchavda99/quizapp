@@ -57,8 +57,8 @@ public class AddQuestionController extends HttpServlet {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            response.sendRedirect("quiz.jsp?id=" + q.getQuizId());
         }
-
-        response.sendRedirect("quiz.jsp?id=" + q.getQuizId());
     }
 }

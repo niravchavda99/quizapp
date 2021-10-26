@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
-    <title>Dashboard</title>
+    <title>My Quizes</title>
     <style>
     .text-center {
         text-align: center;
@@ -65,12 +65,9 @@
     <%@page import="java.sql.Timestamp"%>
 
     <div class="container">
-
-    <%
-        List<Quiz> quizes = Database.fetchQuizes(user.getEmail());
-    %>
             <h1 class="display-1" style="text-align: center; color: white; margin-top: -10px;">Your Quizes</h1>
     <%
+        List<Quiz> quizes = Database.fetchQuizes(user.getEmail());
         if(quizes.isEmpty()) {
     %>
         <div class="alert alert-info">You haven't created any quiz yet!</div>
@@ -99,7 +96,7 @@
             <td><%=date + "    " + time%></td>
             <td class="text-center"><a class="view-quiz" href="quiz.jsp?id=<%=quiz.getId()%>"><i class="fas fa-eye"></i></a></td>
             <%-- <td><a class="btn btn-primary" href="quiz.jsp?id=<%=quiz.getId()%>"><i class="far fa-eye"></i>&nbsp;View</a></td> --%>
-            <td class="text-center"><a class="delete-quiz" href="DeleteQuiz?id=<%=quiz.getId()%>"><i class="fas fa-trash"></i></a></td>
+            <td class="text-center"><a class="delete-quiz" href="DeleteQuizController?id=<%=quiz.getId()%>&email=<%=user.getEmail()%>"><i class="fas fa-trash"></i></a></td>
             <%-- <td><a class="btn btn-danger"><i class="fas fa-trash"></i>&nbsp;Delete</a></td> --%>
         </tr>
     <%

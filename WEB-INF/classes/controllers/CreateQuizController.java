@@ -29,13 +29,16 @@ public class CreateQuizController extends HttpServlet {
 
         String topic = (String) request.getParameter("topic");
 
+        Quiz quiz = null;
         try {
-            Quiz quiz = Database.createQuiz(topic, user.getEmail());
+            quiz = Database.createQuiz(topic, user.getEmail());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            String url = quiz == null ? "dashboard.jsp" : ("quiz.jsp?id=" + quiz.getId());
+            response.sendRedirect(url);
         }
-        response.sendRedirect("dashboard.jsp");
     }
 }
