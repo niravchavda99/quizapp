@@ -12,13 +12,14 @@ import models.User;
 public class Database {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/quizapp";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "";
+    private static final String DB_PASSWORD = "password";
 
     public static User validateUser(String email, String password) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
                 Statement statement = connection.createStatement()) {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String sql = "SELECT * FROM users WHERE email='" + email + "' AND BINARY password='" + password + "'";
+            System.out.println(sql);
             ResultSet resultSet = statement.executeQuery(sql);
 
             User user = null;
@@ -31,6 +32,13 @@ public class Database {
                 user.setPhone(resultSet.getString("phone"));
                 user.setIsVerified(resultSet.getBoolean("isVerified"));
             }
+
+            // user = new User();
+            // user.setEmail("nmchavda99@gmail.com");
+            // user.setIsVerified(true);
+            // user.setName("Nirav Chavda");
+            // user.setPassword("niravchavda");
+            // user.setPhone("9879847769");
 
             return user;
         } catch (Exception e) {
