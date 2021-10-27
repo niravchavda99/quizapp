@@ -203,7 +203,7 @@ public class Database {
         Statement statement = connection.createStatement();
         Class.forName("com.mysql.cj.jdbc.Driver");
 
-        String sql = String.format("DELETE FROM '%s' WHERE '%s'id='%s'", table, type, id);
+        String sql = String.format("DELETE FROM %s WHERE %sid='%s'", table, type, id);
 
         int count = statement.executeUpdate(sql);
 
