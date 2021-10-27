@@ -223,7 +223,7 @@
             </div>
             
             <div class="col-2 text-center">
-                <a class="delete-quiz" href="DeleteQuestion?id=<%=question.getId()%>">
+                <a class="delete-quiz" href="DeleteQuestionController?id=<%=question.getId()%>&quizid=<%=quiz.getId()%>&email=<%=user.getEmail()%>">
                     <i class="fas fa-trash"></i>
                 </a>
             </div>
