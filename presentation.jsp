@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
     <title>Quiz</title>
     </head>
+
+<%@page import="models.User"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%
+    User user = (User) session.getAttribute("user");
+    
+    if(user == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
+
     <style>
         .text-center {
             text-align: center;
@@ -37,19 +49,26 @@
     </style>
     <script>
         var allQuestions = [];
+        var wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+        
+        var ws = new WebSocket(wsUrl + window.location.host + "/quizapp/DetailsController");
+
+        ws.onopen = function(event) {
+            console.log("Opened!!");
+            ws.send("connection:<%=user.getEmail()%>");
+        }
+
+        ws.onmessage = function({data}) {
+		    console.log("Message From Server!");
+		    console.log(data);
+	    };
+
+        ws.onerror = function(event) {
+            console.log("Error ", event)
+        }
+
     </script>
 <body style="background-color: #455A64;">
-
-<%@page import="models.User"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
-    <%
-        User user = (User) session.getAttribute("user");
-        
-        if(user == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-    %>
     
 <%@include file="navTemplate.html"%>
 <%@page import="utils.Database"%>

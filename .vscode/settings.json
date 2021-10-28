@@ -10,6 +10,7 @@
     "/opt/tomcat/lib/jstl-1.2.jar",
     "/opt/tomcat/lib/mail.jar",
     "/opt/tomcat/lib/servlet-api.jar",
-    "/opt/tomcat/lib/mysql-connector-java-8.0.23.jar"
+    "/opt/tomcat/lib/mysql-connector-java-8.0.23.jar",
+    "/opt/tomcat/lib/javax.websocket-api-1.1.jar"
   ]
 }
