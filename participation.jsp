@@ -60,39 +60,15 @@
 
 <%
     String quizid = (String) request.getParameter("id");
-    Quiz quiz = Database.getQuiz(user.getEmail(), quizid);
+    boolean quizExists = Database.quizExists(quizid);
 
-
-    if(quiz == null) {
+    if(!quizExists) {
 %>
 <%@include file="404.html"%>
 <%
         return;
     }
 %>
-<%
-    List<Question> questions = Database.fetchQuestions(quiz.getId());
-    quiz.setQuestions(questions);
-
-    for(int i = 0;i < questions.size(); i++) {
-        Question question = questions.get(i);
-        %>
-        <%-- <div><%=question.getQuestion()%></div> --%>
-        <script>
-            allQuestions.push({
-                questionId: "<%=question.getId()%>",
-                question: "<%=question.getQuestion()%>",
-                option1: "<%=question.getOption1()%>",
-                option2: "<%=question.getOption2()%>",
-                option3: "<%=question.getOption3()%>",
-                option4: "<%=question.getOption4()%>",
-                answer: "<%=question.getAnswer()%>"
-            });
-        </script>
-        <%
-    }
-%>
-
 <div class="container questions-container">
     <%-- Question --%>
     <div class="display-6 question" id="question"></div>
@@ -130,35 +106,7 @@
 </div>
 
 <script>
-    console.log(allQuestions);
-    var current = 0;
-
-    const questionView = document.getElementById("question");
-    const option1View = document.getElementById("option1Label");
-    const option2View = document.getElementById("option2Label");
-    const option3View = document.getElementById("option3Label");
-    const option4View = document.getElementById("option4Label");
     
-    const loadQuestionInView = index => {
-        const question = allQuestions[index];
-        questionView.innerHTML = question.question;
-        option1View.innerHTML = question.option1;
-        option2View.innerHTML = question.option2;
-        option3View.innerHTML = question.option3;
-        option4View.innerHTML = question.option4;
-    }
-
-    loadQuestionInView(current);
-
-    const nextQuestion = () => {
-        current++;
-        if(current >= allQuestions.length) {
-            document.getElementById("next").disabled = true;
-            return;
-        }
-        loadQuestionInView(current);
-    }
-
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

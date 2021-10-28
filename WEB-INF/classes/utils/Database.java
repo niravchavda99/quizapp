@@ -33,13 +33,6 @@ public class Database {
                 user.setIsVerified(resultSet.getBoolean("isVerified"));
             }
 
-            // user = new User();
-            // user.setEmail("nmchavda99@gmail.com");
-            // user.setIsVerified(true);
-            // user.setName("Nirav Chavda");
-            // user.setPassword("niravchavda");
-            // user.setPhone("9879847769");
-
             return user;
         } catch (Exception e) {
             System.out.println("Error in database: " + e.getMessage());
@@ -143,6 +136,17 @@ public class Database {
         }
 
         return quiz;
+    }
+
+    public static boolean quizExists(String quizid) throws SQLException, ClassNotFoundException {
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        String sql = String.format("SELECT * FROM quizes WHERE BINARY quizid='%s'", quizid);
+
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        return resultSet.next();
     }
 
     public static List<Question> fetchQuestions(String quizid) throws SQLException, ClassNotFoundException {

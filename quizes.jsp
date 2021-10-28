@@ -38,6 +38,14 @@
     .view-quiz, .delete-quiz {
         font-size: 20px;
     }
+
+    tr {
+        transition: transform 0.5s ease;
+    }
+
+    tr:hover {
+        transform: scale(1.03);
+    }
     </style>
 </head>
 <body style="background-color: #455A64;">
