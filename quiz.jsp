@@ -44,8 +44,13 @@
         margin-bottom: 5px;
     }
 
+    .row-body {
+        transition: transform 0.5s ease;
+    }
+
     .row-body:hover {
         background-color: rgb(0, 230, 118);
+        transform: scale(1.03);
     }
 
     .modal-textbox {
@@ -58,6 +63,7 @@
 
     #topBar {
         float: right;
+        margin: 0px 0px 0px 10px;
     }
     </style>
 
@@ -100,7 +106,7 @@
 
     if(quiz == null) {
 %>
-    <h1 class="display-5 text-center" style="color: white;">Quiz ID <%=quizid%> is unavailable!</h1>
+<%@include file="404.html"%>
 <%
         return;
     }
@@ -185,6 +191,13 @@
         <h1 class="display-5 text-center" style="color: white; padding: 20px;"><%=quiz.getTopic()%></h1>
 
         <div>
+        <%
+            if(questions.size() > 0) {
+        %>
+            <a href="presentation.jsp?id=<%=quiz.getId()%>" id="topBar" class="btn btn-light"><i class="fa-solid fa-desktop"></i> Present</a>
+        <%
+            }
+        %>
             <div id="topBar" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addQuestionModal"><i class="fas fa-plus"></i> Add Question</div>
         <div>
 
