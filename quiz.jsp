@@ -65,16 +65,22 @@
         float: right;
         margin: 0px 0px 0px 10px;
     }
+
+    label {
+        color: grey;
+    }
     </style>
 
     <script>
-        function populateUpdateForm(questionid, question, op1, op2, op3, op4, answer) {
-            document.getElementById("questionId").value = questionid;
-            document.getElementById("updateQuestion").value = question;
-            document.getElementById("updateOption1").value = op1;
-            document.getElementById("updateOption2").value = op2;
-            document.getElementById("updateOption3").value = op3;
-            document.getElementById("updateOption4").value = op4;
+        const setValueToId = (id, value) => document.getElementById(id).value = value;
+
+        const populateUpdateForm = function (questionid, question, op1, op2, op3, op4, answer) {
+            setValueToId("questionId", questionId);
+            setValueToId("updateQuestion", question);
+            setValueToId("updateOption1", op1);
+            setValueToId("updateOption2", op2);
+            setValueToId("updateOption3", op3);
+            setValueToId("updateOption4", op4);
             document.getElementById("answer"+answer.toUpperCase()).selected = true;
         }
     </script>
@@ -128,12 +134,15 @@
         <form action="AddQuestionController" method="POST">
             <div class="modal-body">
                 <input type="text" class="form-control modal-textbox" placeholder="Question" name="question" id="question" required />
+                
+                <label for="option1">Options</label>
                 <input type="text" class="form-control modal-textbox" placeholder="Option 1" name="option1" id="option1" required />
                 <input type="text" class="form-control modal-textbox" placeholder="Option 2" name="option2" id="option2" required />
                 <input type="text" class="form-control modal-textbox" placeholder="Option 3" name="option3" id="option3" required />
                 <input type="text" class="form-control modal-textbox" placeholder="Option 4" name="option4" id="option4" required />
 
-                <select class="form-control modal-textbox" name="answer" required>
+                <label for="answer">Select Answer</label>
+                <select class="form-control modal-textbox" id="answer" name="answer" required>
                     <option selected disabled>Answer</option>
                     <option>A</option>
                     <option>B</option>
@@ -162,12 +171,15 @@
         <form action="UpdateQuestionController" method="POST">
             <div class="modal-body">
                 <input type="text" class="form-control modal-textbox" placeholder="Question" name="updateQuestion" id="updateQuestion" required />
+                
+                <label for="updateOption1">Options</label>
                 <input type="text" class="form-control modal-textbox" placeholder="Option 1" name="updateOption1" id="updateOption1" required />
                 <input type="text" class="form-control modal-textbox" placeholder="Option 2" name="updateOption2" id="updateOption2" required />
                 <input type="text" class="form-control modal-textbox" placeholder="Option 3" name="updateOption3" id="updateOption3" required />
                 <input type="text" class="form-control modal-textbox" placeholder="Option 4" name="updateOption4" id="updateOption4" required />
 
-                <select class="form-control modal-textbox" name="updateAnswer" required>
+                <label for="updateAnswer">Select Answer</label>
+                <select class="form-control modal-textbox" id="updateAnswer" name="updateAnswer" required>
                     <option id="answerA">A</option>
                     <option id="answerB">B</option>
                     <option id="answerC">C</option>
