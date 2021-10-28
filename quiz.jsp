@@ -31,8 +31,8 @@
     }
 
     .row {
-        color: white;
-        background-color: #0097A7;
+        color: black;
+        background-color: rgba(0, 230, 118, 0.3);
     }
 
     .col-2, .col-6 {
@@ -40,11 +40,12 @@
     }
 
     .row-head {
-        background-color: #00838F;
+        background-color: #00c853;
+        margin-bottom: 5px;
     }
 
     .row-body:hover {
-        background-color: #00BCD4;
+        background-color: rgb(0, 230, 118);
     }
 
     .modal-textbox {
@@ -53,6 +54,10 @@
 
     .modal-header {
         background-color: #00BCD4;
+    }
+
+    #topBar {
+        float: right;
     }
     </style>
 
@@ -180,13 +185,14 @@
         <h1 class="display-5 text-center" style="color: white; padding: 20px;"><%=quiz.getTopic()%></h1>
 
         <div>
-            <div class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addQuestionModal"><i class="fas fa-plus"></i> Add Question</div>
+            <div id="topBar" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addQuestionModal"><i class="fas fa-plus"></i> Add Question</div>
         <div>
 
         <br>
+        <br>
 
         <div class="row row-head">
-            <div class="col-2">
+            <div class="col-2 text-center">
                 <b>Sr No.</b>
             </div>
 
@@ -208,7 +214,7 @@
         Question question = questions.get(i); 
 %>
         <div class="row row-body">
-            <div class="col-2">
+            <div class="col-2 text-center">
                 <%=(i+1)%>
             </div>
 
