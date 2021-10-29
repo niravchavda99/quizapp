@@ -11,7 +11,7 @@
     </head>
 
 <%@page import="models.User"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   --%>
 <%
     User user = (User) session.getAttribute("user");
     
@@ -21,53 +21,52 @@
     }
 %>
 
-    <style>
-        .text-center {
-            text-align: center;
-            margin: 0 auto;
-        }
+<style>
+    .text-center {
+        text-align: center;
+        margin: 0 auto;
+    }
 
-        .questions-container {
-            background-color: rgba(0, 200, 83);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
+    .questions-container {
+        background-color: rgba(0, 200, 83);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
 
-        .question {
-            padding: 10px;
-        }
+    .question {
+        padding: 10px;
+    }
 
-        .option {
-            padding: 5px 40px;
-        }
+    .option {
+        padding: 5px 40px;
+    }
 
-        .next {
-            margin-top: 10px;
-            margin-left: 20px;
-        }
-    </style>
-    <script>
-        var allQuestions = [];
-        var wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-        
-        var ws = new WebSocket(wsUrl + window.location.host + "/quizapp/DetailsController");
+    .next {
+        margin-top: 10px;
+        margin-left: 20px;
+    }
+</style>
 
-        ws.onopen = function(event) {
-            console.log("Opened!!");
-            ws.send("connection:<%=user.getEmail()%>");
-        }
+<script>
+    var allQuestions = [];
+    const wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';   
+    const broadcastSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/BroadcastController");
 
-        ws.onmessage = function({data}) {
-		    console.log("Message From Server!");
-		    console.log(data);
-	    };
+    broadcastSocket.onopen = function(event) {
+        // console.log("Connected!");
+    }
 
-        ws.onerror = function(event) {
-            console.log("Error ", event)
-        }
+    broadcastSocket.onmessage = function({data}) {
+        // console.log(data);
+    }
 
-    </script>
+    broadcastSocket.onerror = function(event) {
+        console.log("Error ", event)
+    }
+
+</script>
+
 <body style="background-color: #455A64;">
     
 <%@include file="navTemplate.html"%>
@@ -149,7 +148,7 @@
 </div>
 
 <script>
-    console.log(allQuestions);
+    // console.log(allQuestions);
     var current = 0;
 
     const questionView = document.getElementById("question");
@@ -165,6 +164,11 @@
         option2View.innerHTML = question.option2;
         option3View.innerHTML = question.option3;
         option4View.innerHTML = question.option4;
+
+        delete question.answer;
+        setTimeout(() => {
+            broadcastSocket.send(JSON.stringify(question)); 
+        }, 500);
     }
 
     loadQuestionInView(current);

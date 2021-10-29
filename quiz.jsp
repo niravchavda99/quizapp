@@ -88,7 +88,7 @@
 <body style="background-color: #455A64;">
 
 <%@page import="models.User"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   --%>
     <%
         User user = (User) session.getAttribute("user");
         

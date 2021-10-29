@@ -1,7 +1,6 @@
 package utils;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import models.User;
 public class Database {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/quizapp";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "password";
+    private static final String DB_PASSWORD = "";
 
     public static User validateUser(String email, String password) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);

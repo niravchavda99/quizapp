@@ -41,7 +41,7 @@
 <body style="background-color: #455A64;">
 
 <%@page import="models.User"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   --%>
     <%
         User user = (User) session.getAttribute("user");
         
@@ -69,6 +69,12 @@
         return;
     }
 %>
+
+<script>
+    const wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+    const broadcastSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/BroadcastController");
+</script>
+
 <div class="container questions-container">
     <%-- Question --%>
     <div class="display-6 question" id="question"></div>
@@ -102,15 +108,36 @@
     </div>
 
     <%-- Next Button --%>
-    <button class="btn btn-dark next" id="next" onclick="nextQuestion()">Next <i class="fa-solid fa-angles-right"></i></button>
+    <button class="btn btn-dark next" id="next">Next <i class="fa-solid fa-angles-right"></i></button>
 </div>
 
 <script>
-    
+    const questionView = document.getElementById("question");
+    const option1View = document.getElementById("option1Label");
+    const option2View = document.getElementById("option2Label");
+    const option3View = document.getElementById("option3Label");
+    const option4View = document.getElementById("option4Label");
+
+    broadcastSocket.onopen = function(event) {
+        console.log('Connected!');
+    }
+
+    broadcastSocket.onmessage = function({data}) {
+        // console.log(data);
+        const question = JSON.parse(data);
+        questionView.innerHTML = question.question;
+        option1View.innerHTML = question.option1;
+        option2View.innerHTML = question.option2;
+        option3View.innerHTML = question.option3;
+        option4View.innerHTML = question.option4;
+    }
+
+    broadcastSocket.onerror = function(event) {
+        console.log("Error ", event)
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
-
 </body>
 </html>

@@ -1,4 +1,4 @@
-package controllers;
+package controllers.socket;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,8 +8,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint("/DetailsController")
-public class DetailsController {
+@ServerEndpoint("/BroadcastController")
+public class BroadcastController {
     private static Set<Session> userSessions = Collections.newSetFromMap(new ConcurrentHashMap<Session, Boolean>());
 
     @OnOpen
@@ -24,10 +24,9 @@ public class DetailsController {
 
     @OnMessage
     public void onMessage(String message, Session userSession) {
-        String result = "Response from server: " + message;
-
         for (Session session : userSessions) {
-            session.getAsyncRemote().sendText(result);
+            if (session != userSession)
+                session.getAsyncRemote().sendText(message);
         }
     }
 }
