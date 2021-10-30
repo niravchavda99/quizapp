@@ -1,1 +1,3 @@
 WEB-INF/classes/*.properties
+.vscode/
+*.class
