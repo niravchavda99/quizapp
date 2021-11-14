@@ -1,57 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<jsp:include page="authheader.jsp" />
+    <link rel="stylesheet" href="assets/css/animate.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/util.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
-    <title>Dashboard</title>
-    <style>
-    .text-center {
-        text-align: center;
-    }
-
-    .class {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-
-    .container-fluid {
-        margin-top: 10px;
-    }
-
-    .card {
-        cursor: pointer;
-        transition: transform 0.5s ease;
-    }
-
-    .card:hover, .card-body:hover, .card-header:hover {
-        background-color: rgba(255, 193, 7, 1);
-    }
-
-    .card:hover {
-        transform: scale(1.1);
-    }
-
-    .card-header {
-        font-size: 20px;
-    }
-
-    .card-body {
-        background-color: #CFD8DC;
-    }
-
-    .modal-header {
-        background-color: rgba(255, 193, 7, 1);
-    }
-    </style>
-</head>
-<body style="background-color: #455A64;">
-    
+  </head>
+  <body>
     <%@page import="models.User"%>
     <%
     
@@ -63,84 +16,100 @@
         }
     %>
     
-    <%@include file="navTemplate.html"%>
+    <!-- ========================= preloader start ========================= -->
+    <div class="preloader">
+      <div class="loader">
+        <div class="spinner">
+          <div class="spinner-container">
+            <div class="spinner-rotator">
+              <div class="spinner-left">
+                <div class="spinner-circle"></div>
+              </div>
+              <div class="spinner-right">
+                <div class="spinner-circle"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+		<!-- ========================= preloader end ========================= -->
+		
 
-    <!-- Create Quiz Modal -->
+    <%@include file="navbar.jsp"%>
+
+    <!-- ========================= hero-section start ========================= -->
+    <section id="home" class="hero-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="hero-content">
+              <span class="wow fadeInLeft" data-wow-delay=".2s">Welcome To Quiz</span>
+              <h1 class="wow fadeInUp" data-wow-delay=".4s">
+                Quiz your audience during presentations
+              </h1>
+              <p class="wow fadeInUp" data-wow-delay=".6s">
+                Create interactive quizzes that are designed to be enjoyable and dynamic, no matter if you want to test your colleague's knowledge, run a fun quiz with your friends, or help students study. 
+              </p>
+              <button class="main-btn btn-hover wow fadeInUp" data-wow-delay=".6s" data-bs-toggle="modal" data-bs-target="#createQuizModal">Create</button>
+              <button class="main-btn btn-hover wow fadeInUp" data-wow-delay=".6s" data-bs-toggle="modal" data-bs-target="#participateQuizModal">Participate</button>
+            </div>
+					</div>
+					<div class="col-lg-6">
+						<div class="hero-img wow fadeInUp" data-wow-delay=".5s">
+							<img src="assets/img/main_page_image.png" alt="">
+						</div>
+					</div>
+        </div>
+			</div>
+    </section>
+		<!-- ========================= hero-section end ========================= -->
+
+
+    <!-- ========================= Create Quiz Modal Start ========================= -->
     <div class="modal fade" id="createQuizModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="CreateQuizController" method="POST">
+              <div class="modal-body">
+                  <input type="text" class="form-control" placeholder="Quiz Topic" name="topic" id="topic" required />
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+          </form>
+          </div>
         </div>
-        <form action="CreateQuizController" method="POST">
-            <div class="modal-body">
-                <input type="text" class="form-control" placeholder="Quiz Topic" name="topic" id="topic" required />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-warning">Create</button>
-            </div>
-        </form>
+      </div>
+      <!-- ========================= Create Quiz Modal End ========================= -->
+  
+      <!-- ========================= Participate Quiz Modal Start ========================= -->
+      <div class="modal fade" id="participateQuizModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="participateQuizModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="participation.jsp" method="POST">
+              <div class="modal-body">
+                  <input type="text" class="form-control" placeholder="Quiz ID" name="quizid" id="participatequizid" required />
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Participate</button>
+              </div>
+          </form>
+          </div>
         </div>
-    </div>
-    </div>
+      </div>
+    <!-- ========================= Participate Quiz Modal End ========================= -->
 
-    <!-- Participate Quiz Modal -->
-    <div class="modal fade" id="participateQuizModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="participateQuizModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form action="participate.jsp" method="POST">
-            <div class="modal-body">
-                <input type="text" class="form-control" placeholder="Quiz ID" name="quizid" id="participatequizid" required />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-warning">Participate</button>
-            </div>
-        </form>
-        </div>
-    </div>
-    </div>
-
-    <div class="container">
-        <div class="row" style="margin-top: 50px;">
-            <div class="col-md-6 class">
-                <div class="card border-warning mb-3" style="max-width: 18rem;" data-bs-toggle="modal" data-bs-target="#createQuizModal">
-                    <div class="card-header bg-warning text-center" style="font-size: 30px;">
-                        <i class="fas fa-plus"></i> Create
-                    </div>
-                    <img src="http://c.files.bbci.co.uk/18145/production/_113692689_quiz_1.png" alt="Quiz">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Create Your Own Quiz</h5>
-                        <%-- <p class="card-text">...</p> --%>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 class">
-                <div class="card border-warning mb-3" style="max-width: 18rem;" data-bs-toggle="modal" data-bs-target="#participateQuizModal">
-                    <div class="card-header bg-warning text-center" style="font-size: 30px;">
-                        <i class="fas fa-hat-wizard"></i> Participate
-                    </div>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8eU22cHOfoga04yvH-yKYNS6FPm9ZeVP2jw&usqp=CAU" alt="Quiz">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Participate In Global Quiz</h5>
-                        <%-- <p class="card-text">...</p> --%>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
-
-</body>
-</html>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <jsp:include page="authfooter.jsp" />

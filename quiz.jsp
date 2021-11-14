@@ -1,76 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<jsp:include page="authheader.jsp" />
+    <link rel="stylesheet" href="assets/css/animate.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/table.css" />
+    <link rel="stylesheet" href="assets/css/util.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
-    <title>Quiz</title>
-    <style>
-    .delete-quiz {
-        color: red;
-    }
-
-    .delete-quiz:hover {
-        color: #b50000;
-    }
-
-    .view-quiz {
-        color: #FFC107;
-        cursor: pointer;
-    }
-
-    .view-quiz:hover {
-        color: #FB8C00;
-    }
-
-    .view-quiz, .delete-quiz {
-        font-size: 20px;
-    }
-
-    .row {
-        color: black;
-        background-color: rgba(0, 230, 118, 0.3);
-    }
-
-    .col-2, .col-6 {
-        padding: 10px;
-    }
-
-    .row-head {
-        background-color: #00c853;
-        margin-bottom: 5px;
-    }
-
-    .row-body {
-        transition: transform 0.5s ease;
-    }
-
-    .row-body:hover {
-        background-color: rgb(0, 230, 118);
-        transform: scale(1.03);
-    }
-
-    .modal-textbox {
-        margin: 10px 0px;
-    }
-
-    .modal-header {
-        background-color: #00BCD4;
-    }
-
-    #topBar {
-        float: right;
-        margin: 0px 0px 0px 10px;
-    }
-
-    label {
-        color: grey;
-    }
-    </style>
-
     <script>
         const setValueToId = (id, value) => document.getElementById(id).value = value;
 
@@ -84,47 +17,109 @@
             document.getElementById("answer"+answer.toUpperCase()).selected = true;
         }
     </script>
-</head>
-<body style="background-color: #455A64;">
-
-<%@page import="models.User"%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   --%>
-    <%
-        User user = (User) session.getAttribute("user");
+  </head>
+  <body>
+    <%@page import="models.User"%>
+    <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   --%>
+        <%
+            User user = (User) session.getAttribute("user");
+            
+            if(user == null) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+        %>
         
-        if(user == null) {
-            response.sendRedirect("login.jsp");
+    <%@include file="navbar.jsp"%>
+    <%@page import="utils.Database"%>
+    <%@page import="models.Quiz"%>
+    <%@page import="models.Question"%>
+    <%@page import="java.util.List"%>
+    <%@page import="java.util.Collections"%>
+    <%
+        String quizid = (String) request.getParameter("id");
+        Quiz quiz = Database.getQuiz(user.getEmail(), quizid);
+
+
+        if(quiz == null) {
+    %>
+    <%@include file="404.html"%>
+    <%
             return;
         }
+
+        List<Question> questions = Database.fetchQuestions(quiz.getId());
+        quiz.setQuestions(questions);
     %>
+
+<h1 class="display-5 text-center mt-100" style="padding: 20px;"><%=quiz.getTopic()%></h1>
     
-<%@include file="navTemplate.html"%>
-<%@page import="utils.Database"%>
-<%@page import="models.Quiz"%>
-<%@page import="models.Question"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.Collections"%>
+    
+    <div class="limiter">
+        <%
+        if(questions.size() > 0) {
+        %>
+            <a href="presentation.jsp?id=<%=quiz.getId()%>" id="topBar" class="btn btn-light"><i class="fa-solid fa-desktop"></i> Present</a>
+        <%
+            }
+        %>
+        <button id="topBar" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addQuestion"><i class="fas fa-plus"></i> Add Question</button>
+        <div class="container-table100">
+            <div class="wrap-table100">
+                <div class="table100 ver1 m-b-110">
+                    <div class="table100-head">
+                        <table>
+                            <thead>
+                                <tr class="row100 head">
+                                    <th class="cell100 column1">Sr. No</th>
+                                    <th class="cell100 column2">Question</th>
+                                    <th class="cell100 column4">Edit</th>
+                                    <th class="cell100 column5">Delete</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
 
-<%
-    String quizid = (String) request.getParameter("id");
-    Quiz quiz = Database.getQuiz(user.getEmail(), quizid);
+                    <div class="table100-body js-pscroll">
+                        <table>
+                            <tbody>
+                                <%
+                                    if(questions.size() > 0){
+                                        for(int i = 0; i < questions.size(); i++) {
+                                            Question question = questions.get(i); 
+                                        %>
+                                        <tr class="row100 body">
+                                            <td class="cell100 column1"><%=(i+1)%></td>
+                                            <td class="cell100 column2"><%=question.getQuestion()%></td>
+                                            <td class="cell100 column4"><span class="view-quiz" data-bs-toggle="modal" data-bs-target="#editQuestionModal" onclick="populateUpdateForm('<%=question.getId()%>', '<%=question.getQuestion()%>', '<%=question.getOption1()%>', '<%=question.getOption2()%>', '<%=question.getOption3()%>', '<%=question.getOption4()%>', '<%=question.getAnswer().toUpperCase()%>')">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </span></td>
+                                            <td class="cell100 column5"><a class="delete-quiz" href="DeleteQuestionController?id=<%=question.getId()%>&quizid=<%=quiz.getId()%>&email=<%=user.getEmail()%>">
+                                                <i class="fas fa-trash"></i>
+                                            </a></td>
+                                        </tr>
+                                        <%
+                                        }
+                                    } else {
+                                    %>
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1" colspan="4"><h2 class="text-center">Empty Question List.</h2></td>
+                                    </tr>
+                                <%   
+                                    }
+                                %>                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-    if(quiz == null) {
-%>
-<%@include file="404.html"%>
-<%
-        return;
-    }
-
-    List<Question> questions = Database.fetchQuestions(quiz.getId());
-    quiz.setQuestions(questions);
-%>
-
-<%-- M O D A L S    S T A R T    H E R E --%>
+    <%-- M O D A L S    S T A R T    H E R E --%>
 
     <!-- Add Question Modal -->
-    <div class="modal fade" id="addQuestionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addQuestion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
@@ -198,75 +193,6 @@
     </div>
 
 <%-- M O D A L S    E N D    H E R E --%>
-
-    <div class="container">
-        <h1 class="display-5 text-center" style="color: white; padding: 20px;"><%=quiz.getTopic()%></h1>
-
-        <div>
-        <%
-            if(questions.size() > 0) {
-        %>
-            <a href="presentation.jsp?id=<%=quiz.getId()%>" id="topBar" class="btn btn-light"><i class="fa-solid fa-desktop"></i> Present</a>
-        <%
-            }
-        %>
-            <div id="topBar" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addQuestionModal"><i class="fas fa-plus"></i> Add Question</div>
-        <div>
-
-        <br>
-        <br>
-
-        <div class="row row-head">
-            <div class="col-2 text-center">
-                <b>Sr No.</b>
-            </div>
-
-            <div class="col-6">
-                <b>Question</b>
-            </div>
-            
-            <div class="col-2 text-center">
-                <b>Edit</b>
-            </div>
-            
-            <div class="col-2 text-center">
-                <b>Delete</b>
-            </div>
-        </div>
-
-<%
-    for(int i = 0; i < questions.size(); i++) {
-        Question question = questions.get(i); 
-%>
-        <div class="row row-body">
-            <div class="col-2 text-center">
-                <%=(i+1)%>
-            </div>
-
-            <div class="col-6">
-                <%=question.getQuestion()%>
-            </div>
-            
-            <div class="col-2 text-center">
-                <span class="view-quiz" data-bs-toggle="modal" data-bs-target="#editQuestionModal" onclick="populateUpdateForm('<%=question.getId()%>', '<%=question.getQuestion()%>', '<%=question.getOption1()%>', '<%=question.getOption2()%>', '<%=question.getOption3()%>', '<%=question.getOption4()%>', '<%=question.getAnswer().toUpperCase()%>')">
-                    <i class="fas fa-pencil-alt"></i>
-                </span>
-            </div>
-            
-            <div class="col-2 text-center">
-                <a class="delete-quiz" href="DeleteQuestionController?id=<%=question.getId()%>&quizid=<%=quiz.getId()%>&email=<%=user.getEmail()%>">
-                    <i class="fas fa-trash"></i>
-                </a>
-            </div>
-        </div>
-<%
-    }
-%>
-    </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
-
-</body>
-</html>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <jsp:include page="authfooter.jsp" />
