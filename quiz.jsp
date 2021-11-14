@@ -75,7 +75,7 @@
         const setValueToId = (id, value) => document.getElementById(id).value = value;
 
         const populateUpdateForm = function (questionid, question, op1, op2, op3, op4, answer) {
-            setValueToId("questionId", questionId);
+            setValueToId("questionId", questionid);
             setValueToId("updateQuestion", question);
             setValueToId("updateOption1", op1);
             setValueToId("updateOption2", op2);

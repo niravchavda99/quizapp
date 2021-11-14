@@ -11,4 +11,4 @@ javac controllers/socket/*.java
 
 # Restart Tomcat
 C:/xampp/tomcat/bin/shutdown.sh
-C:/xampp/tomcat/bin/startup.sh
+# C:/xampp/tomcat/bin/startup.sh
