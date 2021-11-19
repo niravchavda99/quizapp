@@ -220,4 +220,17 @@ public class Database {
 
         return count > 0;
     }
+
+    public static boolean submitResponse(String questionid, String email, String response)
+            throws SQLException, ClassNotFoundException {
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String sql = String.format("INSERT INTO responses VALUES('%s', '%s', '%s')", questionid, email, response);
+
+        int count = statement.executeUpdate(sql);
+
+        return count > 0;
+    }
 }

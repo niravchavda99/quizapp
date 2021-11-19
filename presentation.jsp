@@ -85,35 +85,14 @@
 <div class="container questions-container m-50">
     <%-- Question --%>
     <div class="display-6 question" id="question"></div>
-    
-    <%-- Option 1 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-        <label class="form-check-label" for="flexRadioDefault1" id="option1Label">
-        </label>
-    </div>
-
-    <%-- Option 2 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-        <label class="form-check-label" for="flexRadioDefault2" id="option2Label">
-        </label>
-    </div>
-
-    <%-- Option 3 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
-        <label class="form-check-label" for="flexRadioDefault3" id="option3Label">
-        </label>
-    </div>
-
-    <%-- Option 4 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4">
-        <label class="form-check-label" for="flexRadioDefault4" id="option4Label">
-        </label>
-    </div>
-
+    <hr>
+        <div style="padding: 10px;">
+            <div class="lead" id="option1Label"></div>
+            <div class="lead" id="option2Label"></div>        
+            <div class="lead" id="option3Label"></div>
+            <div class="lead" id="option4Label"></div>
+        </div>
+    <hr>
     <%-- Next Button --%>
     <button class="btn btn-dark next" id="next" onclick="nextQuestion()">Next <i class="fa-solid fa-angles-right"></i></button>
 </div>
@@ -131,10 +110,10 @@
     const loadQuestionInView = index => {
         const question = allQuestions[index];
         questionView.innerHTML = question.question;
-        option1View.innerHTML = question.option1;
-        option2View.innerHTML = question.option2;
-        option3View.innerHTML = question.option3;
-        option4View.innerHTML = question.option4;
+        option1View.innerHTML = "A. " + question.option1;
+        option2View.innerHTML = "B. " + question.option2;
+        option3View.innerHTML = "C. " + question.option3;
+        option4View.innerHTML = "D. " + question.option4;
 
         delete question.answer;
         setTimeout(() => {

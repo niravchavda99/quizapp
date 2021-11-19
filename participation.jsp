@@ -4,9 +4,7 @@
     <link rel="stylesheet" href="assets/css/util.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
     <title>Participate</title>
-    <script>
-        var allQuestions = [];
-    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
 </head>
 <body>
 
@@ -43,6 +41,7 @@
 <script>
     const wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
     const broadcastSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/BroadcastController");
+    const submitAnswerSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/SubmitAnswerController");
     const qId = "<%=quizid%>";
 </script>
 
@@ -51,38 +50,53 @@
 <div class="container questions-container">
     <%-- Question --%>
     <div class="display-6 question" id="question"></div>
-    
+    <hr>
     <%-- Option 1 --%>
     <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-        <label class="form-check-label" for="flexRadioDefault1" id="option1Label">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option1">
+        <label class="form-check-label" for="option1" id="option1Label">
         </label>
     </div>
 
     <%-- Option 2 --%>
     <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-        <label class="form-check-label" for="flexRadioDefault2" id="option2Label">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option2">
+        <label class="form-check-label" for="option2" id="option2Label">
         </label>
     </div>
 
     <%-- Option 3 --%>
     <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
-        <label class="form-check-label" for="flexRadioDefault3" id="option3Label">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option3">
+        <label class="form-check-label" for="option3" id="option3Label">
         </label>
     </div>
 
     <%-- Option 4 --%>
     <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4">
-        <label class="form-check-label" for="flexRadioDefault4" id="option4Label">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option4">
+        <label class="form-check-label" for="option4" id="option4Label">
         </label>
     </div>
-
+    <hr>
     <%-- Next Button --%>
-    <button class="btn btn-dark next" id="next">Next <i class="fa-solid fa-angles-right"></i></button>
+    <button class="btn btn-dark next" id="next" onclick="next()" style="display: block;">Next <i class="fa-solid fa-angles-right"></i></button>
 </div>
+
+<%-- MODALS START HERE --%>
+
+<!-- Waiting Modal -->
+<div class="modal fade" id="waitingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title lead" id="staticBackdropLabel">Waiting for presenter to continue...</h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%-- MODALS END HERE --%>
 
 <script>
     const questionView = document.getElementById("question");
@@ -90,25 +104,71 @@
     const option2View = document.getElementById("option2Label");
     const option3View = document.getElementById("option3Label");
     const option4View = document.getElementById("option4Label");
+    let question = null;
+
+    function next() {
+        $("#waitingModal").modal("show");
+        const answer = getAnswer();
+        console.log("answer", answer);
+        submitAnswerSocket.send("questionid:" + question.questionId + ", email:<%=user.getEmail()%>, response:" + answer);
+    }
+
+    function clearSelection() {
+        document.getElementById("option1").checked = document.getElementById("option2").checked = document.getElementById("option3").checked = document.getElementById("option4").checked = false;
+    }
+
+    function getAnswer() {
+        console.log();
+        if(document.getElementById("option1").checked) return 'a';
+        if(document.getElementById("option2").checked) return 'b';
+        if(document.getElementById("option3").checked) return 'c';
+        if(document.getElementById("option4").checked) return 'd';
+        return '0';
+    }
 
     broadcastSocket.onopen = function(event) {
-        console.log('Connected!');
+        console.log('Broadcast Connected!');
+    }
+
+    submitAnswerSocket.onopen = function(event) {
+        console.log('Submit Answer Connected!');
     }
 
     broadcastSocket.onmessage = function({data}) {
         // console.log(data);
-        const question = JSON.parse(data);
+        clearSelection();
+        question = JSON.parse(data);
         if(question.quizid != qId) return;
         questionView.innerHTML = question.question;
         option1View.innerHTML = question.option1;
         option2View.innerHTML = question.option2;
         option3View.innerHTML = question.option3;
         option4View.innerHTML = question.option4;
+        document.getElementById("next").style.display = "block";
+        hideModal();
+    }
+
+    submitAnswerSocket.onmessage = function({data}) {
+        // $("$waitingModal").modal("hide");
+        console.log("Submit Answer Response", data);
     }
 
     broadcastSocket.onerror = function(event) {
-        console.log("Error ", event)
+        console.log("Broadcast Error ", event);
     }
+
+    submitAnswerSocket.onerror = function(event) {
+        console.log("Submit Answer Error ", event);
+
+    }
+
+    function hideModal() {
+        $("#waitingModal").modal("hide");
+    }
+
+    setTimeout(() => {
+        $("#waitingModal").modal("show");
+    }, 500);
 </script>
 <script src="assets/js/wow.min.js"></script>
 <script src="assets/js/main.js"></script>
