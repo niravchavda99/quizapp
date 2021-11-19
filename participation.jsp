@@ -1,44 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<jsp:include page="authheader.jsp" />
+    <link rel="stylesheet" href="assets/css/animate.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/util.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
-    <title>Quiz</title>
-    </head>
-    <style>
-        .text-center {
-            text-align: center;
-            margin: 0 auto;
-        }
-
-        .questions-container {
-            background-color: rgba(0, 200, 83);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .question {
-            padding: 10px;
-        }
-
-        .option {
-            padding: 5px 40px;
-        }
-
-        .next {
-            margin-top: 10px;
-            margin-left: 20px;
-        }
-    </style>
+    <title>Participate</title>
     <script>
         var allQuestions = [];
     </script>
-<body style="background-color: #455A64;">
+</head>
+<body>
 
 <%@page import="models.User"%>
 <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   --%>
@@ -51,7 +21,7 @@
         }
     %>
     
-<%@include file="navTemplate.html"%>
+<%@include file="navbar.jsp"%>
 <%@page import="utils.Database"%>
 <%@page import="models.Quiz"%>
 <%@page import="models.Question"%>
@@ -59,7 +29,7 @@
 <%@page import="java.util.Collections"%>
 
 <%
-    String quizid = (String) request.getParameter("id");
+    String quizid = (String) request.getParameter("quizid");
     boolean quizExists = Database.quizExists(quizid);
 
     if(!quizExists) {
@@ -73,7 +43,10 @@
 <script>
     const wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
     const broadcastSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/BroadcastController");
+    const qId = "<%=quizid%>";
 </script>
+
+<h1 class="display-5 text-center mt-100" style="padding: 20px;">You are viewing presentation</h1>
 
 <div class="container questions-container">
     <%-- Question --%>
@@ -125,6 +98,7 @@
     broadcastSocket.onmessage = function({data}) {
         // console.log(data);
         const question = JSON.parse(data);
+        if(question.quizid != qId) return;
         questionView.innerHTML = question.question;
         option1View.innerHTML = question.option1;
         option2View.innerHTML = question.option2;
@@ -136,8 +110,6 @@
         console.log("Error ", event)
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
-</body>
-</html>
+<script src="assets/js/wow.min.js"></script>
+<script src="assets/js/main.js"></script>
+<jsp:include page="authfooter.jsp" />
