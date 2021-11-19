@@ -72,7 +72,8 @@
                 option2: "<%=question.getOption2()%>",
                 option3: "<%=question.getOption3()%>",
                 option4: "<%=question.getOption4()%>",
-                answer: "<%=question.getAnswer()%>"
+                answer: "<%=question.getAnswer()%>",
+                quizid: "<%=quizid%>"
             });
         </script>
         <%

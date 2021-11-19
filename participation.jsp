@@ -43,6 +43,7 @@
 <script>
     const wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
     const broadcastSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/BroadcastController");
+    const qId = "<%=quizid%>";
 </script>
 
 <h1 class="display-5 text-center mt-100" style="padding: 20px;">You are viewing presentation</h1>
@@ -97,6 +98,7 @@
     broadcastSocket.onmessage = function({data}) {
         // console.log(data);
         const question = JSON.parse(data);
+        if(question.quizid != qId) return;
         questionView.innerHTML = question.question;
         option1View.innerHTML = question.option1;
         option2View.innerHTML = question.option2;

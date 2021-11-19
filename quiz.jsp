@@ -7,14 +7,14 @@
     <script>
         const setValueToId = (id, value) => document.getElementById(id).value = value;
 
-        const populateUpdateForm = function (questionid, question, op1, op2, op3, op4, answer) {
+        const populateUpdateForm = function (questionId, question, op1, op2, op3, op4, answer) {
             setValueToId("questionId", questionId);
             setValueToId("updateQuestion", question);
             setValueToId("updateOption1", op1);
             setValueToId("updateOption2", op2);
             setValueToId("updateOption3", op3);
             setValueToId("updateOption4", op4);
-            document.getElementById("answer"+answer.toUpperCase()).selected = true;
+            document.getElementById("answer" + answer.toUpperCase()).selected = true;
         }
     </script>
   </head>
