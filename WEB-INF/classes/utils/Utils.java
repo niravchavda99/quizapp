@@ -1,5 +1,7 @@
 package utils;
 
+import models.Score;
+
 public class Utils {
     public static String getUniqueID(int n) {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
@@ -11,5 +13,10 @@ public class Utils {
         }
 
         return sb.toString();
+    }
+
+    public static String getScoreJSON(Score score) {
+        return String.format("{'email':'%s', 'name': '%s', 'score': %s}", score.getUser().getEmail(),
+                score.getUser().getName(), score.getScore());
     }
 }

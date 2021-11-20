@@ -56,6 +56,7 @@
     
     
     <div class="limiter">
+    <div class="container">
         <%
         if(questions.size() > 0) {
         %>
@@ -64,6 +65,7 @@
             }
         %>
         <button id="topBar" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addQuestion"><i class="fas fa-plus"></i> Add Question</button>
+    </div>
         <div class="container-table100">
             <div class="wrap-table100">
                 <div class="table100 ver1 m-b-110">

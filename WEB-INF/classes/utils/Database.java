@@ -6,6 +6,7 @@ import java.util.List;
 
 import models.Question;
 import models.Quiz;
+import models.Score;
 import models.User;
 
 public class Database {
@@ -232,5 +233,33 @@ public class Database {
         int count = statement.executeUpdate(sql);
 
         return count > 0;
+    }
+
+    public static List<Score> fetchScores(String quizid) throws SQLException, ClassNotFoundException {
+        List<Score> scores = new ArrayList<>();
+
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String sql = String.format(
+                "SELECT responses.email, users.name, COUNT(responses.recordedAnswer) AS score FROM users, responses, questions WHERE users.email = responses.email AND questions.questionid=responses.questionid AND responses.questionid IN(SELECT questionid FROM questions WHERE quizid='%s') AND questions.answer=responses.recordedAnswer GROUP BY users.email ORDER BY score DESC",
+                quizid);
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        while (resultSet.next()) {
+            Score score = new Score();
+
+            User user = new User();
+            user.setEmail(resultSet.getString("email"));
+            user.setName(resultSet.getString("name"));
+
+            score.setUser(user);
+            score.setScore(resultSet.getInt("score"));
+
+            scores.add(score);
+        }
+
+        return scores;
     }
 }

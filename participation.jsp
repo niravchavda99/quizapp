@@ -25,6 +25,7 @@
 <%@page import="models.Question"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Collections"%>
+<%@include file="scoreboard.html"%>
 
 <%
     String quizid = (String) request.getParameter("quizid");
@@ -42,6 +43,7 @@
     const wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
     const broadcastSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/BroadcastController");
     const submitAnswerSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/SubmitAnswerController");
+    const loadScoreboardSocket = new WebSocket(wsUrl + window.location.host + "/quizapp/FetchScoreboardController");
     const qId = "<%=quizid%>";
 </script>
 
@@ -87,7 +89,7 @@
 
 <!-- Waiting Modal -->
 <div class="modal fade" id="waitingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title lead" id="staticBackdropLabel">Waiting for presenter to continue...</h5>
@@ -135,9 +137,17 @@
     }
 
     broadcastSocket.onmessage = function({data}) {
-        // console.log(data);
+        const tmp = JSON.parse(data);
+        if('showScoreboard' in tmp) {
+            hideModal();
+            loadScoreboardSocket.send(qId);
+            $("#scoreboardModal").modal("show");
+            console.log("Got Here");
+            return;
+        }
+
         clearSelection();
-        question = JSON.parse(data);
+        question = tmp;
         if(question.quizid != qId) return;
         questionView.innerHTML = question.question;
         option1View.innerHTML = question.option1;
@@ -162,13 +172,35 @@
 
     }
 
+    loadScoreboardSocket.onopen = function(event) {
+        // console.log("Connected!");
+    }
+
+    loadScoreboardSocket.onmessage = function({data}) {
+        data = data.replace(/'/g, '"');
+        scoreboard = JSON.parse(data).scores;
+
+        const dataTable = document.getElementById("dataTable");
+
+        dataTable.innerHTML = "";
+        for(let  i = 0; i < scoreboard.length; i++)
+            dataTable.innerHTML += "<tr><th scope='row'>" + i + "</th><td>" + scoreboard[i].name + "</td><td>" + scoreboard[i].score + "</td></tr>";
+    }
+
+    loadScoreboardSocket.onerror = function(event) {
+        console.log("Load Scoreboard Participation Error ", event)
+    }
+
     function hideModal() {
         $("#waitingModal").modal("hide");
+        $("#scoreboardModal").modal("hide");
     }
 
     setTimeout(() => {
         $("#waitingModal").modal("show");
     }, 500);
+
+    document.getElementById("modalFooter").innerHTML = "<div class='lead'>Waiting for host to continue...</div>";
 </script>
 <script src="assets/js/wow.min.js"></script>
 <script src="assets/js/main.js"></script>
