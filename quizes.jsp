@@ -39,11 +39,11 @@
                         <table>
                             <thead>
                                 <tr class="row100 head">
-                                    <th class="cell100 column1">Sr. No</th>
+                                    <th class="cell100 column1 text-center">#</th>
                                     <th class="cell100 column2">Topic</th>
                                     <th class="cell100 column3">Created At</th>
-                                    <th class="cell100 column4">View</th>
-                                    <th class="cell100 column5">Delete</th>
+                                    <th class="cell100 column4 text-center">View</th>
+                                    <th class="cell100 column5 text-center">Delete</th>
                                 </tr>
                             </thead>
                         </table>
@@ -60,19 +60,49 @@
                                     String time = String.format("%d:%d:%d", timestamp.getHours(), timestamp.getMinutes(), timestamp.getSeconds());
                                 %>
                                 <tr class="row100 body">
-                                    <td class="cell100 column1"><%=(i+1)%></td>
+                                    <td class="cell100 column1 text-center"><%=(i+1)%></td>
                                     <td class="cell100 column2"><%=quiz.getTopic()%></td>
                                     <td class="cell100 column3"><%=date + "    " + time%></td>
-                                    <td class="cell100 column4"><a class="view-quiz" href="quiz.jsp?id=<%=quiz.getId()%>"><i class="fas fa-eye"></i></a></td>
-                                    <td class="cell100 column5"><a class="delete-quiz" href="DeleteQuizController?id=<%=quiz.getId()%>&email=<%=user.getEmail()%>"><i class="fas fa-trash"></i></a></td>
+                                    <td class="cell100 column4 text-center"><a class="view-quiz" href="quiz.jsp?id=<%=quiz.getId()%>"><i class="fas fa-eye"></i></a></td>
+                                    <td class="cell100 column5 text-center"><a class="delete-quiz" href="DeleteQuizController?id=<%=quiz.getId()%>&email=<%=user.getEmail()%>"><i class="fas fa-trash"></i></a></td>
                                 </tr>
                                 <%
                                   }
                                 %>                               
                             </tbody>
                         </table>
+
                     </div>
                 </div>
+                
+                <div class="container">
+                    <h1 class="display-5 text-center">View Scores</h1>
+                    <table class="table table-responsive table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col"><strong>#</strong></th>
+                                <th scope="col"><strong>Quiz</strong></th>
+                                <th scope="col" class="text-center"><strong>Score</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                            List<String> qzs = Database.fetchCompletedQuizes(user.getEmail());
+                            for(int i = 0; i < qzs.size(); i++) {
+                                out.println("<tr>");
+                                out.println("<th scope='row'>" + (i + 1) + "</th>");
+                                int index = qzs.get(i).indexOf(',');
+                                String qid = qzs.get(i).substring(0, index);
+                                String qtopic = qzs.get(i).substring(index + 1);
+                                out.println("<td>" + qtopic + "</td>");
+                                out.println("<td class='text-center'><a class='view-quiz' href='scores.jsp?id=" + qid + "'><i class='fas fa-eye'></i></a></td>");
+                                out.println("</tr>");
+                            }
+                            %>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     </div>

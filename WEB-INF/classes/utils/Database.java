@@ -262,4 +262,22 @@ public class Database {
 
         return scores;
     }
+
+    public static List<String> fetchCompletedQuizes(String email) throws SQLException, ClassNotFoundException {
+        List<String> quizes = new ArrayList<>();
+
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String sql = String.format(
+                "SELECT DISTINCT quizes.quizid, quizes.topic FROM responses, questions, quizes WHERE responses.questionid=questions.questionid AND questions.quizid=quizes.quizid AND quizes.email='%s'",
+                email);
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        while (resultSet.next())
+            quizes.add(resultSet.getString("quizid") + "," + resultSet.getString("topic"));
+
+        return quizes;
+    }
 }
