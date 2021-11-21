@@ -136,6 +136,10 @@
         console.log('Submit Answer Connected!');
     }
 
+    const lastQuestionAction = () => {
+        window.location = "scores.jsp?id=" + quizid;
+    };
+
     broadcastSocket.onmessage = function({data}) {
         const tmp = JSON.parse(data);
         if('showScoreboard' in tmp) {
@@ -146,9 +150,14 @@
             return;
         }
 
+
         clearSelection();
         question = tmp;
         if(question.quizid != qId) return;
+        
+        if(question.isLast)
+            document.getElementById("modalFooter").innerHTML = "<button class='btn btn-success btn-lg' onclick='lastQuestionAction()'>Final Scores</button>";
+
         questionView.innerHTML = question.question;
         option1View.innerHTML = question.option1;
         option2View.innerHTML = question.option2;

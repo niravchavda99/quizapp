@@ -83,7 +83,7 @@
     List<Question> questions = Database.fetchQuestions(quiz.getId());
     quiz.setQuestions(questions);
 
-    for(int i = 0;i < questions.size(); i++) {
+    for(int i = 0; i < questions.size(); i++) {
         Question question = questions.get(i);
         %>
         <%-- <div><%=question.getQuestion()%></div> --%>
@@ -96,7 +96,8 @@
                 option3: "<%=question.getOption3()%>",
                 option4: "<%=question.getOption4()%>",
                 answer: "<%=question.getAnswer()%>",
-                quizid: "<%=quizid%>"
+                quizid: "<%=quizid%>",
+                isLast: false
             });
         </script>
         <%
@@ -106,7 +107,13 @@
 <h1 class="display-5 text-center mt-100">You are presenting now</h1>
 <div class="display-5 text-center mt-10">Quiz Code: <%=quizid%></div>
 
-<div class="container questions-container m-50">
+<div class="container text-center mt-100" id="quizInitial">
+    <button class="btn btn-lg btn-info" onclick="startQuiz()" style="font-size: 30px">
+        Start Quiz
+    </button>
+</div>
+
+<div class="container questions-container m-50" id="questionContainer" style="display: none">
     <%-- Question --%>
     <div class="display-6 question" id="question"></div>
 
@@ -133,7 +140,19 @@
     const option2View = document.getElementById("option2Label");
     const option3View = document.getElementById("option3Label");
     const option4View = document.getElementById("option4Label");
+
+    allQuestions[allQuestions.length - 1].isLast = true;
     
+    const startQuiz = () => {
+        document.getElementById("quizInitial").style.display = "none";
+        document.getElementById("questionContainer").style.display = "block";
+        loadQuestionInView(current);
+    }
+
+    const lastQuestionAction = () => {
+        window.location = "scores.jsp?id=" + quizid;
+    };
+
     const loadQuestionInView = index => {
         const question = allQuestions[index];
         questionView.innerHTML = question.question;
@@ -146,9 +165,14 @@
         setTimeout(() => {
             broadcastSocket.send(JSON.stringify(question)); 
         }, 500);
-    }
 
-    loadQuestionInView(current);
+        if(question.isLast) {
+            const btn = document.getElementById("nextQuestionModalBtn");
+            btn.className = "btn btn-success btn-lg";
+            btn.innerHTML = "Final Scores";
+            btn.addEventListener("click", lastQuestionAction, true);
+        }
+    }
 
     const loadScoreboard = () => {
         broadcastSocket.send(JSON.stringify({showScoreboard: true}));
@@ -159,6 +183,7 @@
     const nextQuestion = () => {
         current++;
         if(current >= allQuestions.length) {
+            // broadcastSocket.send(JSON.stringify({lastQuestion: true}));
             document.getElementById("next").disabled = true;
             return;
         }
