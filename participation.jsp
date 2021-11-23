@@ -161,7 +161,7 @@
     }
 
     const lastQuestionAction = () => {
-        window.location = "scores.jsp?id=" + quizid;
+        window.location = "scores.jsp?id=" + qId;
     };
 
     broadcastSocket.onmessage = function({data}) {
