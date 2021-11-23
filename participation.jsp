@@ -49,40 +49,53 @@
 
 <h1 class="display-5 text-center mt-100" style="padding: 20px;">You are viewing presentation</h1>
 
-<div class="container questions-container">
-    <%-- Question --%>
-    <div class="display-6 question" id="question"></div>
-    <hr>
-    <%-- Option 1 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option1">
-        <label class="form-check-label" for="option1" id="option1Label">
-        </label>
-    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9">
 
-    <%-- Option 2 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option2">
-        <label class="form-check-label" for="option2" id="option2Label">
-        </label>
-    </div>
+            <div class="container questions-container" style="display: none;" id="questionBody">
+                <%-- Question --%>
+                <div class="display-6 question" id="question"></div>
+                <hr>
+                <%-- Option 1 --%>
+                <div class="form-check option">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="option1">
+                    <label class="form-check-label" for="option1" id="option1Label">
+                    </label>
+                </div>
 
-    <%-- Option 3 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option3">
-        <label class="form-check-label" for="option3" id="option3Label">
-        </label>
-    </div>
+                <%-- Option 2 --%>
+                <div class="form-check option">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="option2">
+                    <label class="form-check-label" for="option2" id="option2Label">
+                    </label>
+                </div>
 
-    <%-- Option 4 --%>
-    <div class="form-check option">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="option4">
-        <label class="form-check-label" for="option4" id="option4Label">
-        </label>
+                <%-- Option 3 --%>
+                <div class="form-check option">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="option3">
+                    <label class="form-check-label" for="option3" id="option3Label">
+                    </label>
+                </div>
+
+                <%-- Option 4 --%>
+                <div class="form-check option">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="option4">
+                    <label class="form-check-label" for="option4" id="option4Label">
+                    </label>
+                </div>
+                <hr>
+                <%-- Next Button --%>
+                <button class="btn btn-dark next" id="next" onclick="next()" style="display: block;">Next <i class="fa-solid fa-angles-right"></i></button>
+            </div>
+            <div id="waitingText" class="text-center mt-50">
+                <p class='display-6'>Waiting for host to continue...</p>
+            </div>
+        </div>
+        <div class="col-3">
+            <%@include file="chatbox.html"%>
+        </div>
     </div>
-    <hr>
-    <%-- Next Button --%>
-    <button class="btn btn-dark next" id="next" onclick="next()" style="display: block;">Next <i class="fa-solid fa-angles-right"></i></button>
 </div>
 
 <%-- MODALS START HERE --%>
@@ -108,8 +121,19 @@
     const option4View = document.getElementById("option4Label");
     let question = null;
 
+    function showBody() {
+        document.getElementById("questionBody").style.display = "block";
+        document.getElementById("waitingText").style.display = "none";
+    }
+
+    function showWaiting() {
+        document.getElementById("questionBody").style.display = "none";
+        document.getElementById("waitingText").style.display = "block";
+    }
+
     function next() {
-        $("#waitingModal").modal("show");
+        // $("#waitingModal").modal("show");
+        showWaiting();
         const answer = getAnswer();
         console.log("answer", answer);
         submitAnswerSocket.send("questionid:" + question.questionId + ", email:<%=user.getEmail()%>, response:" + answer);
@@ -144,17 +168,43 @@
         const tmp = JSON.parse(data);
         if('showScoreboard' in tmp) {
             hideModal();
+            showWaiting();
             loadScoreboardSocket.send(qId);
             $("#scoreboardModal").modal("show");
             console.log("Got Here");
             return;
         }
 
+        if('chat' in tmp) {
+            $('.card-body').scrollTop(1000000);
+            const messageReceived = tmp.chat;
+            console.log("Msg Received:", messageReceived);
+
+            const sender = (messageReceived.sender + (messageReceived.isHost ? " (Host)" : ""));
+
+            document.getElementById("chat-screen").innerHTML += `
+            <li class="agent clearfix">
+                <span class="chat-img left clearfix mx-2">
+                    <img src="http://placehold.it/50/55C1E7/fff&text=`+messageReceived.sender.substr(0,1) + `" alt="Agent" class="img-circle" />
+                </span>
+                <div class="chat-body clearfix">
+                    <div class="header clearfix">
+                        <strong class="primary-font">` + sender + `</strong> <small class="right text-muted">       
+                    </div>
+                    <p>` + messageReceived.message + `</p>
+                </div>
+            </li>
+            `;
+
+            $('.card-body').scrollTop(1000000);
+            return;
+        }
 
         clearSelection();
         question = tmp;
         if(question.quizid != qId) return;
         
+        showBody();
         if(question.isLast)
             document.getElementById("modalFooter").innerHTML = "<button class='btn btn-success btn-lg' onclick='lastQuestionAction()'>Final Scores</button>";
 
@@ -205,9 +255,38 @@
         $("#scoreboardModal").modal("hide");
     }
 
-    setTimeout(() => {
-        $("#waitingModal").modal("show");
-    }, 500);
+    // setTimeout(() => {
+        // $("#waitingModal").modal("show");
+    // }, 500);
+
+    function sendChat() {
+        var msgContent = document.getElementById("msgContent").value;
+        const dataToSend = {
+            chat: {
+                sender: '<%=user.getName()%>',
+                message: msgContent,
+                isHost: false
+            }
+        };
+
+        broadcastSocket.send(JSON.stringify(dataToSend));
+        document.getElementById("msgContent").value = "";
+
+        document.getElementById("chat-screen").innerHTML += `
+        <li class="admin clearfix">
+            <span class="chat-img right clearfix  mx-2">
+                <img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="Admin" class="img-circle" />
+            </span>
+            <div class="chat-body clearfix">
+                <div class="header clearfix"> 
+                    <strong class="right primary-font">` + dataToSend.chat.sender + `</strong>
+                </div>
+                <p>` + dataToSend.chat.message + `</p>
+            </div>
+        </li>
+        `;
+        $('.card-body').scrollTop(1000000);
+    }
 
     document.getElementById("modalFooter").innerHTML = "<div class='lead'>Waiting for host to continue...</div>";
 </script>

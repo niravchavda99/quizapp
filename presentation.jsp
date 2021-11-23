@@ -29,7 +29,28 @@
     }
 
     broadcastSocket.onmessage = function({data}) {
-        // console.log(data);
+        const message = JSON.parse(data);
+        if('chat' in message) {
+            const messageReceived = message.chat;
+            console.log("Msg Received:", messageReceived);
+
+            document.getElementById("chat-screen").innerHTML += `
+            <li class="agent clearfix">
+                <span class="chat-img left clearfix mx-2">
+                    <img src="http://placehold.it/50/55C1E7/fff&text=`+messageReceived.sender.substr(0,1) + `" alt="Agent" class="img-circle" />
+                </span>
+                <div class="chat-body clearfix">
+                    <div class="header clearfix">
+                        <strong class="primary-font">` + messageReceived.sender + `</strong> <small class="right text-muted">       
+                    </div>
+                    <p>` + messageReceived.message + `</p>
+                </div>
+            </li>
+            `;
+            
+            $('.card-body').scrollTop(1000000);
+        }
+
     }
 
     broadcastSocket.onerror = function(event) {
@@ -107,29 +128,38 @@
 <h1 class="display-5 text-center mt-100">You are presenting now</h1>
 <div class="display-5 text-center mt-10">Quiz Code: <%=quizid%></div>
 
-<div class="container text-center mt-100" id="quizInitial">
-    <button class="btn btn-lg btn-info" onclick="startQuiz()" style="font-size: 30px">
-        Start Quiz
-    </button>
-</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9">
+            <div class="container text-center mt-100" id="quizInitial">
+                <button class="btn btn-lg btn-info" onclick="startQuiz()" style="font-size: 30px">
+                    Start Quiz
+                </button>
+            </div>
 
-<div class="container questions-container m-50" id="questionContainer" style="display: none">
-    <%-- Question --%>
-    <div class="display-6 question" id="question"></div>
+            <div class="container questions-container m-50" id="questionContainer" style="display: none">
+                <%-- Question --%>
+                <div class="display-6 question" id="question"></div>
 
-    <hr>
-        <div style="padding: 10px;">
-            <div class="lead" id="option1Label"></div>
-            <div class="lead" id="option2Label"></div>        
-            <div class="lead" id="option3Label"></div>
-            <div class="lead" id="option4Label"></div>
+                <hr>
+                    <div style="padding: 10px;">
+                        <div class="lead" id="option1Label"></div>
+                        <div class="lead" id="option2Label"></div>        
+                        <div class="lead" id="option3Label"></div>
+                        <div class="lead" id="option4Label"></div>
+                    </div>
+                <hr>
+
+                <%-- Next Button --%>
+                <button class="btn btn-dark next" id="next" onclick="loadScoreboard()">Scoreboard & Next</button>
+                <button class="btn btn-dark next" id="next2" onclick="nextQuestion()">Next Question <i class="fa-solid fa-angles-right"></i></button>
+            </div>
         </div>
-    <hr>
-
-    <%-- Next Button --%>
-    <button class="btn btn-dark next" id="next" onclick="loadScoreboard()">Next <i class="fa-solid fa-angles-right"></i></button>
+        <div class="col-3">
+            <%@include file="chatbox.html"%>
+        </div>
+    </div>
 </div>
-
 <script>
     // console.log(allQuestions);
     var current = 0;
@@ -142,7 +172,7 @@
     const option4View = document.getElementById("option4Label");
 
     allQuestions[allQuestions.length - 1].isLast = true;
-    
+
     const startQuiz = () => {
         document.getElementById("quizInitial").style.display = "none";
         document.getElementById("questionContainer").style.display = "block";
@@ -188,6 +218,36 @@
             return;
         }
         loadQuestionInView(current);
+    }
+
+    function sendChat() {
+        var msgContent = document.getElementById("msgContent").value;
+        console.log(msgContent);
+        const dataToSend = {
+            chat: {
+                sender: '<%=user.getName()%>',
+                message: msgContent,
+                isHost: true
+            }
+        };
+
+        broadcastSocket.send(JSON.stringify(dataToSend));
+        document.getElementById("msgContent").value = "";
+
+        document.getElementById("chat-screen").innerHTML += `
+        <li class="admin clearfix">
+            <span class="chat-img right clearfix  mx-2">
+                <img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="Admin" class="img-circle" />
+            </span>
+            <div class="chat-body clearfix">
+                <div class="header clearfix"> 
+                    <strong class="right primary-font">` + dataToSend.chat.sender + `</strong>
+                </div>
+                <p>` + dataToSend.chat.message + `</p>
+            </div>
+        </li>
+        `;
+        $('.card-body').scrollTop(1000000);
     }
 
     document.getElementById("nextQuestionModalBtn").addEventListener("click", nextQuestion, true);
