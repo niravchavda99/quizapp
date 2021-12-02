@@ -280,4 +280,24 @@ public class Database {
 
         return quizes;
     }
+
+    public static Quiz getAttemptedQuiz(String email, String quizid) throws SQLException, ClassNotFoundException {
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        String sql = String.format("SELECT DISTINCT quizes.* FROM questions, responses, quizes WHERE questions.questionid=responses.questionid AND quizes.quizid=questions.quizid AND responses.email='%s' AND questions.quizid='%s'", email, quizid);
+
+        Quiz quiz = null;
+
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        if (resultSet.next()) {
+            quiz = new Quiz();
+            quiz.setId(resultSet.getString("quizid"));
+            quiz.setTopic(resultSet.getString("topic"));
+            quiz.setTimestamp(resultSet.getTimestamp("timestamp"));
+        }
+
+        return quiz;
+    }
 }

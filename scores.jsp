@@ -27,6 +27,8 @@
     String quizid = (String) request.getParameter("id");
     Quiz quiz = Database.getQuiz(user.getEmail(), quizid);
 
+    if(quiz == null)
+        quiz = Database.getAttemptedQuiz(user.getEmail(), quizid);
 
     if(quiz == null) {
 %>
